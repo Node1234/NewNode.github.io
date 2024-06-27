@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分类查询</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        p {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        #tipsContainer1 {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            z-index: 100;
+            padding: 10px;
+            width: 200px;
+            border-radius: 5px;
+        }
+
+        .search-tips h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .search-tips ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .search-tips li {
+            font-size: 13px;
+            margin-bottom: 3px;
+            color: #666;
+        }
+        #tipsContainer2 {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            z-index: 100;
+            padding: 10px;
+            width: 200px;
+            border-radius: 5px;
+        }
+
+        .search-tips h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .search-tips ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .search-tips li {
+            font-size: 13px;
+            margin-bottom: 3px;
+            color: #666;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>分类查询</h2>
+    <nav>
+        <a class="nav-link" href="index.html">返回主页</a> |
+        <a class="nav-link" href="add.html">添加药材</a> |
+        <a class="nav-link" href="search.html">模糊搜索</a> |
+        <a class="nav-link" href="delete.html">删除药材</a>
+    </nav>
+
+
+    <h3>药材名称查询</h3>
+    <form id="nameForm">
+        <label for="classify-name">请输入药材名称:</label>
+        <input type="text" id="classify-name" name="name" required>
+        <button type="submit">查询</button>
+    </form>
+    <p id="classify-result"></p>
+
+    <h3>类别查询</h3>
+    <form id="categoryForm">
+        <label for="search-category">请输入药材类别:</label>
+        <input type="text" id="search-category" name="category" required>
+        <button type="submit">查询</button>
+    </form>
+    <div id="tipsContainer2">
+        <div class="search-tips">
+            <h4>常见类别</h4>
+             <ul>
+                <li>补虚药</li>
+                <li>补血药</li>
+                <li>活血药</li>
+                <li>健脾药</li>
+                <li>利水渗湿药</li>
+                <li>调和药</li>
+                <li>清热药</li>
+                <li>泻下药</li>
+                <li>化痰药</li>
+                <li>理气药</li>
+                <li>解表药</li>
+                <li>祛风湿药</li>
+                <li>收涩药</li>
+                <li>温里药</li>
+                <li>平肝熄风药</li>
+                <li>止咳药</li>
+                <li>安神药</li>
+                <li>利湿药</li>
+                <li>驱虫药</li>
+                <li>开窍药</li>
+                <li>温中药</li>
+                <li>止血药</li>
+                <li>润下药</li>
+                <li>消食药</li>
+                <li>止咳平喘药</li>
+                <li>化湿药</li>
+                <li>补肾药</li>
+            </ul>
+        </div>
+    </div>
+    <p id="category-result"></p>
+
+    <h3>功效查询</h3>
+    <form id="effectForm">
+        <label for="search-effect">请输入药材功效:</label>
+        <input type="text" id="search-effect" name="effect" required>
+        <button type="submit">查询</button>
+    </form>
+    <div id="tipsContainer1">
+        <div class="search-tips">
+            <h4>常见功效</h4>
+            <ul>
+                <li>补气</li>
+                <li>补血</li>
+                <li>滋阴</li>
+                <li>补肾阳</li>
+                <li>清热</li>
+                <li>利水渗湿</li>
+                <li>祛风湿</li>
+                <li>止血</li>
+                <li>止咳平喘</li>
+            </ul>
+
+            <h4>不常见功效</h4>
+            <ul>
+                <li>解毒</li>
+                <li>消肿</li>
+                <li>活血化瘀</li>
+                <li>安胎</li>
+                <li>生发乌发</li>
+                <li>明目</li>
+                <li>通经下乳</li>
+                <li>杀虫</li>
+                <li>止痒</li>
+            </ul>
+        </div>
+    </div>
+    <p id="effect-result"></p>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#nameForm').on('submit', function(e) {
+            e.preventDefault();
+            var data = {name: $('#classify-name').val()};
+            $.ajax({
+                url: 'http://localhost:8080/herbs/classify',
+                method: 'GET',
+                data: data,
+                success: function(response) {
+                    var lines = response.split('\n');
+                    var category = lines[0];
+                    var effect = lines[1];
+                    $('#classify-result').text('类别: ' + category + ',功效: ' + effect);
+                },
+                error: function(xhr, status, error) {
+                    alert('操作失败: ' + error);
+                }
+            });
+        });
+
+        $('#categoryForm').on('submit', function(e) {
+            e.preventDefault();
+            var $searchCategory = $('#search-category');
+            var data = { category: $searchCategory.val() };
+            var $categoryResult = $('#category-result');
+
+            $.ajax({
+                url: 'http://localhost:8080/herbs/searchByCategory',
+                method: 'GET',
+                data: data,
+                success: function(response) {
+                    if (!response || response.length === 0) {
+                        $categoryResult.text('未找到该类别的药材');
+                        return;
+                    }
+                    var herbs = response.map(function(herb) {
+                        return herb.name;
+                    }).join(', ');
+                    $categoryResult.text('药材名称: ' + herbs);
+                },
+                error: function(xhr, status, error) {
+                    alert('操作失败: ' + error);
+                }
+            });
+        });
+        $('#search-category').on('focus', function() {
+            $('#tipsContainer2').show();
+        });
+
+        $('#search-category, #tipsContainer2').on('blur', function() {
+            setTimeout(function() {
+                $('#tipsContainer2').hide();
+            }, 200);
+        });
+
+
+        $('#effectForm').on('submit', function(e) {
+            e.preventDefault();
+            var $searchEffect = $('#search-effect');
+            var data = { effect: $searchEffect.val() };
+            var $effectResult = $('#effect-result');
+
+            $.ajax({
+                url: 'http://localhost:8080/herbs/searchByEffect',
+                method: 'GET',
+                data: data,
+                success: function(response) {
+                    if (!response || response.length === 0) {
+                        $effectResult.text('未找到匹配的药材');
+                        return;
+                    }
+                    var herbs = response.map(function(herb) {
+                        return herb.name + ' - ' + herb.category;
+                    }).join(', ');
+                    $effectResult.text('药材名称及类别: ' + herbs);
+                },
+                error: function(xhr, status, error) {
+                    alert('操作失败: ' + error);
+                }
+            });
+        });
+
+        $('#search-effect').on('focus', function() {
+            $('#tipsContainer1').show();
+        });
+
+        $('#search-effect, #tipsContainer1').on('blur', function() {
+            setTimeout(function() {
+                $('#tipsContainer1').hide();
+            }, 200);
+        });
+    });
+</script>
+</body>
+</html>

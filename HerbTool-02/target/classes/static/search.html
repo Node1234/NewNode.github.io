@@ -1,0 +1,122 @@
+<!DOCTYPE html> <!-- 声明文档类型为HTML5 -->
+<html lang="en"> <!-- HTML文档开始，语言设置为英语 -->
+<head>
+    <meta charset="UTF-8"> <!-- 设置字符编码为UTF-8 -->
+    <title>模糊搜索</title> <!-- 设置网页标题 -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script> <!-- 引入jQuery库 -->
+    <style>
+        /* 内联CSS样式 */
+        body {
+            font-family: Arial, sans-serif; /* 设置字体 */
+            background-color: #f4f4f4; /* 设置背景颜色 */
+            margin: 0; /* 设置外边距为0 */
+            padding: 0; /* 设置内边距为0 */
+        }
+        .container {
+            width: 80%; /* 设置宽度为80% */
+            margin: 0 auto; /* 居中对齐 */
+            background-color: #fff; /* 设置背景颜色 */
+            padding: 20px; /* 设置内边距 */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 设置阴影效果 */
+        }
+        h2 {
+            color: #333; /* 设置标题颜色 */
+            text-align: center; /* 居中对齐 */
+            margin-bottom: 20px; /* 设置底部外边距 */
+        }
+        nav {
+            background-color: #333; /* 设置导航栏背景颜色 */
+            padding: 10px 0; /* 设置内边距 */
+            text-align: center; /* 居中对齐 */
+        }
+        .nav-link {
+            color: #fff; /* 设置链接颜色 */
+            text-decoration: none; /* 去除下划线 */
+            margin: 0 15px; /* 设置左右外边距 */
+            font-size: 18px; /* 设置字体大小 */
+        }
+        .nav-link:hover {
+            text-decoration: underline; /* 鼠标悬停时添加下划线 */
+        }
+        form {
+            margin-top: 20px; /* 设置顶部外边距 */
+        }
+        label {
+            display: block; /* 设置为块级元素，独占一行 */
+            margin-bottom: 5px; /* 设置底部外边距 */
+        }
+        input[type="text"] {
+            width: 100%; /* 设置宽度为100% */
+            padding: 10px; /* 设置内边距 */
+            margin-bottom: 15px; /* 设置底部外边距 */
+            border: 1px solid #ddd; /* 设置边框样式 */
+        }
+        button {
+            padding: 10px 20px; /* 设置内边距 */
+            background-color: #333; /* 设置背景颜色 */
+            color: #fff; /* 设置字体颜色 */
+            border: none; /* 去除边框 */
+            cursor: pointer; /* 设置鼠标样式为手型 */
+        }
+        button:hover {
+            background-color: #555; /* 鼠标悬停时改变背景颜色 */
+        }
+        ul {
+            list-style-type: none; /* 去除列表默认样式 */
+            padding: 0; /* 设置内边距为0 */
+        }
+        li {
+            padding: 10px; /* 设置内边距 */
+            background-color: #f4f4f4; /* 设置背景颜色 */
+            margin-bottom: 5px; /* 设置底部外边距 */
+        }
+    </style>
+</head>
+<body>
+<div class="container"> <!-- 容器开始 -->
+    <h2>模糊搜索</h2> <!-- 页面标题 -->
+    <nav> <!-- 导航栏开始 -->
+        <a class="nav-link" href="index.html">返回主页</a> | <!-- 返回主页链接 -->
+        <a class="nav-link" href="add.html">添加药材</a> | <!-- 添加药材链接 -->
+        <a class="nav-link" href="classify.html">分类查询</a> | <!-- 分类查询链接 -->
+        <a class="nav-link" href="delete.html">删除药材</a> <!-- 删除药材链接 -->
+    </nav> <!-- 导航栏结束 -->
+
+    <form id="searchForm"> <!-- 模糊搜索表单开始 -->
+        <label for="search-keyword">输入药品名称关键词:</label> <!-- 关键词标签 -->
+        <input type="text" id="search-keyword" name="keyword" required> <!-- 关键词输入框 -->
+        <button type="submit">搜索</button> <!-- 搜索按钮 -->
+    </form> <!-- 模糊搜索表单结束 -->
+    <ul id="search-result"></ul> <!-- 搜索结果显示区域 -->
+</div> <!-- 容器结束 -->
+
+<script>
+    $(document).ready(function () {
+        $('#searchForm').on('submit', function (e) {
+            e.preventDefault(); // 阻止表单默认提交行为
+            var data = {
+                keyword: $('#search-keyword').val() // 获取关键词
+            };
+            $.ajax({
+                url: 'http://localhost:8080/herbs/search', // 请求URL
+                method: 'GET', // 请求方法
+                data: data, // 发送的数据
+                success: function (response) {
+                    $('#search-result').empty(); // 清空搜索结果列表
+                    if (response.length === 0) {
+                        $('#search-result').append('<li>没有查找到匹配的药材</li>'); // 如果没有匹配结果，显示提示信息
+                    } else {
+                        response.forEach(function (herb) {
+                            $('#search-result').append('<li>' + herb.name + ' - ' + herb.category + ' - ' + herb.effect + '</li>'); // 添加药材名称、类别和功效到列表
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('操作失败: ' + error); // 显示错误消息
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

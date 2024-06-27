@@ -1,0 +1,152 @@
+<!DOCTYPE html> <!-- 声明文档类型为HTML5 -->
+<html lang="en"> <!-- HTML文档开始，语言设置为英语 -->
+<head>
+    <meta charset="UTF-8"> <!-- 设置字符编码为UTF-8 -->
+    <title>中药药材管理工具 - 主界面</title> <!-- 设置网页标题 -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script> <!-- 引入jQuery库 -->
+    <style>
+        /* 内联CSS样式 */
+        body {
+            font-family: Arial, sans-serif; /* 设置字体 */
+            background-color: #f4f4f4; /* 设置背景颜色 */
+            margin: 0; /* 设置外边距为0 */
+            padding: 0; /* 设置内边距为0 */
+        }
+        .container {
+            width: 80%; /* 设置宽度为80% */
+            margin: 0 auto; /* 居中对齐 */
+            background-color: #fff; /* 设置背景颜色 */
+            padding: 20px; /* 设置内边距 */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 设置阴影效果 */
+        }
+        h1 {
+            color: #333; /* 设置标题颜色 */
+            text-align: center; /* 居中对齐 */
+            margin-bottom: 20px; /* 设置底部外边距 */
+        }
+        nav {
+            background-color: #333; /* 设置导航栏背景颜色 */
+            padding: 10px 0; /* 设置内边距 */
+            text-align: center; /* 居中对齐 */
+        }
+        .nav-link {
+            color: #fff; /* 设置链接颜色 */
+            text-decoration: none; /* 去除下划线 */
+            margin: 0 15px; /* 设置左右外边距 */
+            font-size: 18px; /* 设置字体大小 */
+        }
+        .nav-link:hover {
+            text-decoration: underline; /* 鼠标悬停时添加下划线 */
+        }
+        table {
+            width: 100%; /* 设置表格宽度 */
+            border-collapse: collapse; /* 合并边框 */
+        }
+        th, td {
+            border: 1px solid #ddd; /* 设置边框样式 */
+            padding: 8px; /* 设置内边距 */
+            text-align: left; /* 左对齐 */
+        }
+        th {
+            background-color: #f2f2f2; /* 设置表头背景颜色 */
+            cursor: pointer; /* 设置鼠标样式为手型 */
+        }
+        .herb-title {
+            font-size: 24px; /* 设置字体大小 */
+            color: #333; /* 设置颜色 */
+            margin-bottom: 20px; /* 设置底部外边距 */
+        }
+    </style>
+</head>
+<body>
+<div class="container"> <!-- 容器开始 -->
+    <h1>药材管理工具</h1> <!-- 页面标题 -->
+    <nav> <!-- 导航栏开始 -->
+        <a href="add.html" class="nav-link">添加药材</a> | <!-- 添加药材链接 -->
+        <a href="classify.html" class="nav-link">分类查询</a> | <!-- 分类查询链接 -->
+        <a href="search.html" class="nav-link">模糊搜索</a> | <!-- 模糊搜索链接 -->
+        <a href="delete.html" class="nav-link">删除药材</a> <!-- 删除药材链接 -->
+    </nav> <!-- 导航栏结束 -->
+    <h2 class="herb-title">收录药材总览</h2> <!-- 药材总览标题 -->
+    <table> <!-- 表格开始 -->
+        <thead> <!-- 表头开始 -->
+        <tr> <!-- 表头行开始 -->
+            <th>名称</th> <!-- 名称列 -->
+            <th>类别</th> <!-- 类别列 -->
+            <th>功效</th> <!-- 功效列 -->
+        </tr> <!-- 表头行结束 -->
+        </thead> <!-- 表头结束 -->
+        <tbody class="herb-list"> <!-- 表格内容开始 -->
+        <!-- 药材信息将在这里动态生成 -->
+        </tbody> <!-- 表格内容结束 -->
+    </table> <!-- 表格结束 -->
+</div> <!-- 容器结束 -->
+
+<script>
+    $(document).ready(function() {
+        var sortOrder = 1; // 排序顺序，初始为升序
+        var currentSortColumn = null; // 当前排序的列
+
+        // 获取药材数据
+        $.ajax({
+            url: 'http://localhost:8080/herbs/all',
+            method: 'GET',
+            success: function(data) {
+                updateTable(data);
+            },
+            error: function(xhr, status, error) {
+                alert('无法获取药材信息: ' + error);
+            }
+        });
+
+        // 点击表头进行排序
+        $('th').click(function() {
+            var column = $(this).index(); // 获取点击的列的索引
+            if (column === 2) {
+                // 如果是功效列，则不进行排序
+                return;
+            }
+            if (currentSortColumn === column) {
+                // 如果点击的列是当前排序的列，切换排序顺序
+                sortOrder *= -1;
+            } else {
+                // 否则，重置排序顺序并设置新的排序列
+                sortOrder = 1;
+                currentSortColumn = column;
+            }
+            $.ajax({
+                url: 'http://localhost:8080/herbs/all',
+                method: 'GET',
+                success: function(data) {
+                    // 根据点击的列排序数据
+                    data.sort(function(a, b) {
+                        if (column === 0) { // 如果是名称列
+                            return (a.name.localeCompare(b.name)) * sortOrder;
+                        } else if (column === 1) { // 如果是类别列
+                            return (a.category.localeCompare(b.category)) * sortOrder;
+                        }
+                        return (a[Object.keys(a)[column]].localeCompare(b[Object.keys(b)[column]])) * sortOrder;
+                    });
+                    updateTable(data);
+                },
+                error: function(xhr, status, error) {
+                    alert('无法获取药材信息: ' + error);
+                }
+            });
+        });
+
+        function updateTable(data) {
+            var herbList = $('.herb-list');
+            herbList.empty();
+            data.forEach(function(herb) {
+                herbList.append('<tr>' +
+                    '<td>' + herb.name + '</td>' +
+                    '<td>' + herb.category + '</td>' +
+                    '<td>' + herb.effect + '</td>' +
+                    '</tr>');
+            });
+        }
+    });
+</script>
+</body>
+</html>
